@@ -1,0 +1,11 @@
+// == checks only the value
+// === checks type as well as value
+//comparision operators always return boolena value i.e. True or false
+
+let a="1"
+let b=1
+console.log(a==b);
+console.log(a===b);
+
+//not equal
+console.log(1 !==2);

@@ -1,0 +1,22 @@
+//for in> Object
+// for of> Array
+
+let obj={
+    a : 10,
+    b : 20,
+    c : 30
+
+}
+
+let windows= ["google", "amazon", "youtube"]
+
+for (let key in obj) {
+    console.log(key) //gets all thekeys
+    console.log(obj[key]); //gets all the values
+    }
+    for (let element of windows) {
+          console.log(element);
+        
+    }
+    
+    

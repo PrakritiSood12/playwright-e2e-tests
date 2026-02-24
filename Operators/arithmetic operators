@@ -1,0 +1,19 @@
+import { console } from "inspector";
+
+//usecase1 : find a remainder
+let a=5
+console.log(a%2);
+
+//increment and decrement
+for (let i=1; i<=5; i++)
+{
+   console.log(i);
+}
+
+for (let j=5; j>=0; j--)
+{
+   console.log(j);
+}
+
+//urany plus
+console.log (+"3"+3);
