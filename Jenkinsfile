@@ -1,7 +1,7 @@
 pipeline {
   agent any
   tools { 
-    nodejs 'node22' // Jenkins > Global Tool Config: NodeJS named "node22"
+    nodejs 'node26' // Jenkins > Global Tool Config: NodeJS named "node26"
      allure 'allure'// Jenkins > Global Tool Config: Allure named "allure"
     }
     options {
@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh '''
+        bat '''
           set -eu 
           npm ci
           npx playwright install
@@ -22,7 +22,7 @@ pipeline {
     }
     stage('Test') {
       steps {
-        sh '''
+        bat '''
           export TEST_USER_NAME="$TEST_CREDS_USR"
           export TEST_PASSWORD="$TEST_CREDS_PSW"
           npm run test:make-apt
