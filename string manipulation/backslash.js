@@ -1,18 +1,84 @@
-/* 
-/ is an escape character and will be skipped
-if we want to print characters like ' or / or $ then we can use /
-\n-new line
-\t- tab
-\b backspace
-\\ backslash character
-\v vertical tab
+pipeline {
+    agent any
 
- 
-*/
+    tools {
+        nodejs 'node26'
+        allure 'allure'
+    }
 
-let str = 'Hello Word, it\'s me' // without backslash it will give error
-let strpath = 'test\\Hello\\Here' // one backslash will be skipped
-let str2 = 'Hello Word,\n it\'s me' // /n means new line because it already have special meaning
-console.log(str);
-console.log(strpath);
-console.log(str2);
+    options {
+        timeout(time: 20, unit: 'MINUTES')
+    }
+
+    environment {
+        TEST_CREDS = credentials('e2e-test-user')
+    }
+
+    stages {
+
+        stage('Install Dependencies') {
+            steps {
+                bat '''
+                    call npm install
+                '''
+            }
+        }
+
+        stage('Install Playwright Browsers') {
+            steps {
+                bat '''
+                    call npx playwright install --with-deps
+                '''
+            }
+        }
+
+        stage('Verify Playwright Installation') {
+            steps {
+                bat '''
+                    call npx playwright --version
+                '''
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat '''
+                    set TEST_USER_NAME=%TEST_CREDS_USR%
+                    set TEST_PASSWORD=%TEST_CREDS_PSW%
+
+                    call npm run test:make-apt
+                '''
+            }
+
+            post {
+                always {
+
+                    allure includeProperties: false,
+                           jdk: '',
+                           results: [[path: 'allure-results']],
+                           reportBuildPolicy: 'ALWAYS'
+
+                    archiveArtifacts artifacts: 'playwright-report/**/*',
+                                     allowEmptyArchive: true
+
+                    archiveArtifacts artifacts: 'test-results/**/*',
+                                     allowEmptyArchive: true
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution completed.'
+        }
+
+        success {
+            echo 'Playwright tests passed successfully.'
+        }
+
+        failure {
+            echo 'Playwright tests failed.'
+        }
+    }
+}
