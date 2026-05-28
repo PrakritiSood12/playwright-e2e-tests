@@ -5,6 +5,7 @@
   "main": "index.js",
 
   "scripts": {
+    "test:make-apt": "npx playwright test",
     "demo": "npx playwright test tests/demo/mytest.spec.ts --headed",
 
     "login": "npx playwright test tests/function/login.spec.ts --headed",
@@ -17,7 +18,6 @@
 
 "dev:make-apt": "npx playwright test tests/function/make.aptmnt.spec.ts",
 
-"test:make-apt": "npx playwright test",
 
     "demo:params": "npx playwright test tests/demo/params.make.aptmnt.spec.ts --headed",
 
