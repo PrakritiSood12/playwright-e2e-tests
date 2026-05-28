@@ -7,6 +7,7 @@ pipeline {
     }
 
     options {
+        skipDefaultCheckout(true)
         timeout(time: 20, unit: 'MINUTES')
     }
 
@@ -15,6 +16,18 @@ pipeline {
     }
 
     stages {
+
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
 
         stage('Install Dependencies') {
             steps {
@@ -27,15 +40,7 @@ pipeline {
         stage('Install Playwright Browsers') {
             steps {
                 bat '''
-                    call npx playwright install --with-deps
-                '''
-            }
-        }
-
-        stage('Verify Playwright Installation') {
-            steps {
-                bat '''
-                    call npx playwright --version
+                    call npx playwright install
                 '''
             }
         }
@@ -49,36 +54,6 @@ pipeline {
                     call npm run test:make-apt
                 '''
             }
-
-            post {
-                always {
-
-                    allure includeProperties: false,
-                           jdk: '',
-                           results: [[path: 'allure-results']],
-                           reportBuildPolicy: 'ALWAYS'
-
-                    archiveArtifacts artifacts: 'playwright-report/**/*',
-                                     allowEmptyArchive: true
-
-                    archiveArtifacts artifacts: 'test-results/**/*',
-                                     allowEmptyArchive: true
-                }
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline execution completed.'
-        }
-
-        success {
-            echo 'Playwright tests passed successfully.'
-        }
-
-        failure {
-            echo 'Playwright tests failed.'
         }
     }
 }
