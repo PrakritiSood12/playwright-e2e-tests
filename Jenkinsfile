@@ -25,7 +25,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat '''
-                    call npm ci
+                    call npm install
                 '''
             }
         }
